@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestão Empresarial</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 3px solid #667eea;
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            padding: 15px 30px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #555;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab-button:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .tab-button.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.3s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 5px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        table th,
+        table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .stat-card.success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .stat-card.danger {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        }
+
+        .stat-card.warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .stat-card.info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            margin-bottom: 20px;
+            color: #667eea;
+            font-size: 1.5em;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            color: #1565c0;
+            border-left: 4px solid #1565c0;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #2e7d32;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            table th,
+            table td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Sistema de Gestão Empresarial</h1>
+            <p>Controle completo de vendas, estoque, despesas e impostos</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab('dashboard')">Dashboard</button>
+            <button class="tab-button" onclick="openTab('vendas')">Vendas</button>
+            <button class="tab-button" onclick="openTab('estoque')">Estoque</button>
+            <button class="tab-button" onclick="openTab('funcionarios')">Funcionários</button>
+            <button class="tab-button" onclick="openTab('despesas')">Despesas</button>
+            <button class="tab-button" onclick="openTab('relatorios')">Relatórios</button>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card success">
+                    <h3>Receita Bruta</h3>
+                    <div class="value" id="dashReceitaBruta">R$ 0,00</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Receita Líquida</h3>
+                    <div class="value" id="dashReceitaLiquida">R$ 0,00</div>
+                </div>
+                <div class="stat-card danger">
+                    <h3>Despesas Totais</h3>
+                    <div class="value" id="dashDespesas">R$ 0,00</div>
+                </div>
+                <div class="stat-card warning">
+                    <h3>Impostos a Pagar</h3>
+                    <div class="value" id="dashImpostos">R$ 0,00</div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card info">
+                    <h3>Total de Vendas</h3>
+                    <div class="value" id="dashTotalVendas">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Produtos em Estoque</h3>
+                    <div class="value" id="dashTotalProdutos">0</div>
+                </div>
+                <div class="stat-card success">
+                    <h3>Lucro Bruto</h3>
+                    <div class="value" id="dashLucroBruto">R$ 0,00</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Lucro Líquido</h3>
+                    <div class="value" id="dashLucroLiquido">R$ 0,00</div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card info">
+                    <h3>Funcionários Ativos</h3>
+                    <div class="value" id="dashTotalFuncionarios">0</div>
+                </div>
+                <div class="stat-card warning">
+                    <h3>Folha de Pagamento</h3>
+                    <div class="value" id="dashFolhaPagamento">R$ 0,00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vendas -->
+        <div id="vendas" class="tab-content">
+            <div class="section">
+                <h2>➕ Nova Venda</h2>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Produto</label>
+                        <select id="vendaProduto">
+                            <option value="">Selecione um produto</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantidade</label>
+                        <input type="number" id="vendaQuantidade" min="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Cliente</label>
+                        <input type="text" id="vendaCliente" placeholder="Nome do cliente">
+                    </div>
+                    <div class="form-group">
+                        <label>Data</label>
+                        <input type="date" id="vendaData">
+                    </div>
+                </div>
+                <button class="btn" onclick="adicionarVenda()">Registrar Venda</button>
+            </div>
+
+            <div class="section">
+                <h2>📋 Histórico de Vendas</h2>
+                <table id="tabelaVendas">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Produto</th>
+                            <th>Quantidade</th>
+                            <th>Preço Unit.</th>
+                            <th>Total</th>
+                            <th>Cliente</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vendasBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Estoque -->
+        <div id="estoque" class="tab-content">
+            <div class="section">
+                <h2>➕ Adicionar Produto</h2>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Nome do Produto</label>
+                        <input type="text" id="produtoNome" placeholder="Ex: Notebook Dell">
+                    </div>
+                    <div class="form-group">
+                        <label>Preço de Custo (R$)</label>
+                        <input type="number" id="produtoCusto" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Preço de Venda (R$)</label>
+                        <input type="number" id="produtoVenda" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Quantidade em Estoque</label>
+                        <input type="number" id="produtoQuantidade" min="0" value="0">
+                    </div>
+                </div>
+                <button class="btn" onclick="adicionarProduto()">Adicionar Produto</button>
+            </div>
+
+            <div class="section">
+                <h2>📦 Produtos em Estoque</h2>
+                <table id="tabelaEstoque">
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Preço Custo</th>
+                            <th>Preço Venda</th>
+                            <th>Margem</th>
+                            <th>Quantidade</th>
+                            <th>Valor Total</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="estoqueBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Funcionários -->
+        <div id="funcionarios" class="tab-content">
+            <div class="section">
+                <h2>➕ Cadastrar Funcionário</h2>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Nome Completo</label>
+                        <input type="text" id="funcionarioNome" placeholder="Ex: João da Silva">
+                    </div>
+                    <div class="form-group">
+                        <label>CPF</label>
+                        <input type="text" id="funcionarioCPF" placeholder="000.000.000-00" maxlength="14">
+                        <small>Formato: 000.000.000-00</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Salário (R$)</label>
+                        <input type="number" id="funcionarioSalario" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Pagamento</label>
+                        <select id="funcionarioTipoPagamento">
+                            <option value="pix">PIX</option>
+                            <option value="conta">Conta Bancária</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label id="labelChavePix">Chave PIX</label>
+                        <input type="text" id="funcionarioChavePagamento" placeholder="CPF, e-mail, telefone ou chave aleatória">
+                        <small id="smallChavePix">Informe a chave PIX do funcionário</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Cargo</label>
+                        <input type="text" id="funcionarioCargo" placeholder="Ex: Vendedor">
+                    </div>
+                </div>
+                <button class="btn" onclick="adicionarFuncionario()">Cadastrar Funcionário</button>
+            </div>
+
+            <div class="section">
+                <h2>👥 Funcionários Cadastrados</h2>
+                <div class="alert alert-info">
+                    <strong>💡 Dica:</strong> Os salários dos funcionários são automaticamente contabilizados nas despesas mensais.
+                </div>
+                <table id="tabelaFuncionarios">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>CPF</th>
+                            <th>Cargo</th>
+                            <th>Salário</th>
+                            <th>Tipo Pgto.</th>
+                            <th>Chave/Conta</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="funcionariosBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Despesas -->
+        <div id="despesas" class="tab-content">
+            <div class="section">
+                <h2>➕ Adicionar Despesa</h2>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Tipo de Despesa</label>
+                        <select id="despesaTipo">
+                            <option value="Água">Água</option>
+                            <option value="Energia">Energia</option>
+                            <option value="Aluguel">Aluguel</option>
+                            <option value="Internet">Internet</option>
+                            <option value="Telefone">Telefone</option>
+                            <option value="Material de Escritório">Material de Escritório</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Manutenção">Manutenção</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        <input type="text" id="despesaDescricao" placeholder="Detalhes da despesa">
+                    </div>
+                    <div class="form-group">
+                        <label>Valor (R$)</label>
+                        <input type="number" id="despesaValor" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Data</label>
+                        <input type="date" id="despesaData">
+                    </div>
+                </div>
+                <button class="btn" onclick="adicionarDespesa()">Registrar Despesa</button>
+            </div>
+
+            <div class="section">
+                <h2>💰 Resumo de Despesas por Categoria</h2>
+                <table id="tabelaResumo">
+                    <thead>
+                        <tr>
+                            <th>Categoria</th>
+                            <th>Total</th>
+                            <th>% do Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resumoBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <h2>📋 Histórico de Despesas</h2>
+                <table id="tabelaDespesas">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Tipo</th>
+                            <th>Descrição</th>
+                            <th>Valor</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="despesasBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Relatórios -->
+        <div id="relatorios" class="tab-content">
+            <div class="section">
+                <h2>💼 Configuração de Impostos</h2>
+                <p style="margin-bottom: 15px; color: #666;">Selecione o regime tributário da sua empresa:</p>
+                
+                <div class="form-group">
+                    <label>Regime Tributário</label>
+                    <select id="regimeTributario" onchange="calcularRelatorios()">
+                        <option value="simples">Simples Nacional - Comércio (Anexo I)</option>
+                        <option value="presumido">Lucro Presumido</option>
+                        <option value="real">Lucro Real</option>
+                    </select>
+                </div>
+
+                <div class="alert alert-info" id="infoRegime">
+                    <strong>Simples Nacional - Comércio:</strong> Alíquota inicial de 4% até R$ 180.000 de receita anual, variando até 19% conforme faturamento.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 Demonstrativo de Resultados (DRE)</h2>
+                
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><strong>Receita Bruta de Vendas</strong></td>
+                            <td id="relReceitaBruta" style="text-align: right; font-weight: bold;">R$ 0,00</td>
+                        </tr>
+                        <tr style="background: #f8f9fa;">
+                            <td style="padding-left: 30px;">(-) Custo dos Produtos Vendidos (CPV)</td>
+                            <td id="relCPV" style="text-align: right;">R$ 0,00</td>
+                        </tr>
+                        <tr style="background: #e8f5e9;">
+                            <td><strong>= Lucro Bruto</strong></td>
+                            <td id="relLucroBruto" style="text-align: right; font-weight: bold; color: #2e7d32;">R$ 0,00</td>
+                        </tr>
+                        <tr style="background: #f8f9fa;">
+                            <td style="padding-left: 30px;">(-) Despesas Operacionais</td>
+                            <td id="relDespesasOp" style="text-align: right;">R$ 0,00</td>
+                        </tr>
+                        <tr style="background: #f8f9fa;">
+                            <td style="padding-left: 30px;">(-) Folha de Pagamento (Salários)</td>
+                            <td id="relFolha" style="text-align: right;">R$ 0,00</td>
+                        </tr>
+                        <tr style="background: #fff3e0;">
+                            <td><strong>= Lucro Antes dos Impostos (LAIR)</strong></td>
+                            <td id="relLAIR" style="text-align: right; font-weight: bold; color: #f57c00;">R$ 0,00</td>
+                        </tr>
+                        <tr style="background: #f8f9fa;">
+                            <td style="padding-left: 30px;">(-) Impostos sobre Lucro</td>
+                            <td id="relImpostos" style="text-align: right;">R$ 0,00</td>
+                        </tr>
+                        <tr style="background: #e3f2fd;">
+                            <td><strong>= Lucro Líquido</strong></td>
+                            <td id="relLucroLiquido" style="text-align: right; font-weight: bold; color: #1565c0; font-size: 18px;">R$ 0,00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <h2>📈 Indicadores de Performance</h2>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><strong>Margem de Lucro Bruto</strong></td>
+                            <td id="margemBruta" style="text-align: right; font-weight: bold;">0%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Margem de Lucro Líquido</strong></td>
+                            <td id="margemLiquida" style="text-align: right; font-weight: bold;">0%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ticket Médio por Venda</strong></td>
+                            <td id="ticketMedio" style="text-align: right; font-weight: bold;">R$ 0,00</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ROI (Retorno sobre Investimento)</strong></td>
+                            <td id="roi" style="text-align: right; font-weight: bold;">0%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Custo com Pessoal / Receita</strong></td>
+                            <td id="custoPessoal" style="text-align: right; font-weight: bold;">0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estrutura de dados
+        let produtos = [];
+        let vendas = [];
+        let despesas = [];
+        let funcionarios = [];
+
+        // Inicialização
+        window.onload = function() {
+            carregarDados();
+            document.getElementById('vendaData').valueAsDate = new Date();
+            document.getElementById('despesaData').valueAsDate = new Date();
+            
+            // Listener para tipo de pagamento
+            document.getElementById('funcionarioTipoPagamento').addEventListener('change', function() {
+                const tipo = this.value;
+                const label = document.getElementById('labelChavePix');
+                const small = document.getElementById('smallChavePix');
+                const input = document.getElementById('funcionarioChavePagamento');
+                
+                if (tipo === 'pix') {
+                    label.textContent = 'Chave PIX';
+                    small.textContent = 'Informe a chave PIX do funcionário';
+                    input.placeholder = 'CPF, e-mail, telefone ou chave aleatória';
+                } else {
+                    label.textContent = 'Conta Bancária';
+                    small.textContent = 'Formato: Banco - Agência - Conta';
+                    input.placeholder = 'Ex: Banco do Brasil - 1234-5 - 12345-6';
+                }
+            });
+
+            // Máscara para CPF
+            document.getElementById('funcionarioCPF').addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length <= 11) {
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                    e.target.value = value;
+                }
+            });
+
+            atualizarTudo();
+        };
+
+        // Navegação entre abas
+        function openTab(tabName) {
+            const contents = document.getElementsByClassName('tab-content');
+            const buttons = document.getElementsByClassName('tab-button');
+            
+            for (let content of contents) {
+                content.classList.remove('active');
+            }
+            
+            for (let button of buttons) {
+                button.classList.remove('active');
+            }
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // VALIDAÇÃO DE CPF
+        function validarCPF(cpf) {
+            cpf = cpf.replace(/[^\d]/g, '');
+            
+            if (cpf.length !== 11) return false;
+            
+            if (/^(\d)\1{10}$/.test(cpf)) return false;
+            
+            let soma = 0;
+            let resto;
+            
+            for (let i = 1; i <= 9; i++) {
+                soma += parseInt(cpf.substring(i-1, i)) * (11 - i);
+            }
+            
+            resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) resto = 0;
+            if (resto !== parseInt(cpf.substring(9, 10))) return false;
+            
+            soma = 0;
+            for (let i = 1; i <= 10; i++) {
+                soma += parseInt(cpf.substring(i-1, i)) * (12 - i);
+            }
+            
+            resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) resto = 0;
+            if (resto !== parseInt(cpf.substring(10, 11))) return false;
+            
+            return true;
+        }
+
+        // FUNCIONÁRIOS
+        function adicionarFuncionario() {
+            const nome = document.getElementById('funcionarioNome').value.trim();
+            const cpf = document.getElementById('funcionarioCPF').value.trim();
+            const salario = parseFloat(document.getElementById('funcionarioSalario').value);
+            const tipoPagamento = document.getElementById('funcionarioTipoPagamento').value;
+            const chavePagamento = document.getElementById('funcionarioChavePagamento').value.trim();
+            const cargo = document.getElementById('funcionarioCargo').value.trim();
+
+            if (!nome || !cpf || !salario || !chavePagamento || !cargo) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+
+            if (!validarCPF(cpf)) {
+                alert('CPF inválido! Verifique o número digitado.');
+                return;
+            }
+
+            // Verificar se CPF já existe
+            if (funcionarios.some(f => f.cpf === cpf)) {
+                alert('Já existe um funcionário cadastrado com este CPF!');
+                return;
+            }
+
+            funcionarios.push({
+                id: Date.now(),
+                nome,
+                cpf,
+                salario,
+                tipoPagamento,
+                chavePagamento,
+                cargo
+            });
+
+            salvarDados();
+            limparFormularioFuncionario();
+            atualizarTudo();
+            alert('Funcionário cadastrado com sucesso!');
+        }
+
+        function limparFormularioFuncionario() {
+            document.getElementById('funcionarioNome').value = '';
+            document.getElementById('funcionarioCPF').value = '';
+            document.getElementById('funcionarioSalario').value = '';
+            document.getElementById('funcionarioChavePagamento').value = '';
+            document.getElementById('funcionarioCargo').value = '';
+        }
+
+        function removerFuncionario(id) {
+            if (confirm('Deseja realmente remover este funcionário?')) {
+                funcionarios = funcionarios.filter(f => f.id !== id);
+                salvarDados();
+                atualizarTudo();
+            }
+        }
+
+        function renderizarFuncionarios() {
+            const tbody = document.getElementById('funcionariosBody');
+            tbody.innerHTML = '';
+
+            if (funcionarios.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Nenhum funcionário cadastrado</td></tr>';
+                return;
+            }
+
+            funcionarios.forEach(func => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${func.nome}</td>
+                    <td>${func.cpf}</td>
+                    <td>${func.cargo}</td>
+                    <td>R$ ${func.salario.toFixed(2)}</td>
+                    <td>${func.tipoPagamento === 'pix' ? 'PIX' : 'Conta Bancária'}</td>
+                    <td style="font-size: 13px;">${func.chavePagamento}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="removerFuncionario(${func.id})">Remover</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // PRODUTOS / ESTOQUE
+        function adicionarProduto() {
+            const nome = document.getElementById('produtoNome').value;
+            const custo = parseFloat(document.getElementById('produtoCusto').value);
+            const venda = parseFloat(document.getElementById('produtoVenda').value);
+            const quantidade = parseInt(document.getElementById('produtoQuantidade').value);
+
+            if (!nome || !custo || !venda || quantidade < 0) {
+                alert('Preencha todos os campos corretamente!');
+                return;
+            }
+
+            if (venda <= custo) {
+                if (!confirm('O preço de venda é menor ou igual ao custo. Deseja continuar?')) {
+                    return;
+                }
+            }
+
+            produtos.push({
+                id: Date.now(),
+                nome,
+                custo,
+                venda,
+                quantidade
+            });
+
+            salvarDados();
+            limparFormularioProduto();
+            atualizarTudo();
+            alert('Produto adicionado com sucesso!');
+        }
+
+        function limparFormularioProduto() {
+            document.getElementById('produtoNome').value = '';
+            document.getElementById('produtoCusto').value = '';
+            document.getElementById('produtoVenda').value = '';
+            document.getElementById('produtoQuantidade').value = '0';
+        }
+
+        function removerProduto(id) {
+            if (confirm('Deseja realmente remover este produto?')) {
+                produtos = produtos.filter(p => p.id !== id);
+                salvarDados();
+                atualizarTudo();
+            }
+        }
+
+        function renderizarEstoque() {
+            const tbody = document.getElementById('estoqueBody');
+            tbody.innerHTML = '';
+
+            if (produtos.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Nenhum produto cadastrado</td></tr>';
+                return;
+            }
+
+            produtos.forEach(produto => {
+                // Cálculo correto da margem: (Preço Venda - Preço Custo) / Preço Venda * 100
+                const margem = produto.venda > 0 ? ((produto.venda - produto.custo) / produto.venda * 100).toFixed(2) : 0;
+                const valorTotal = produto.venda * produto.quantidade;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${produto.nome}</td>
+                    <td>R$ ${produto.custo.toFixed(2)}</td>
+                    <td>R$ ${produto.venda.toFixed(2)}</td>
+                    <td>${margem}%</td>
+                    <td>${produto.quantidade}</td>
+                    <td>R$ ${valorTotal.toFixed(2)}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="removerProduto(${produto.id})">Remover</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            atualizarSelectProdutos();
+        }
+
+        function atualizarSelectProdutos() {
+            const select = document.getElementById('vendaProduto');
+            select.innerHTML = '<option value="">Selecione um produto</option>';
+
+            produtos.forEach(produto => {
+                if (produto.quantidade > 0) {
+                    const option = document.createElement('option');
+                    option.value = produto.id;
+                    option.textContent = `${produto.nome} (Estoque: ${produto.quantidade}) - R$ ${produto.venda.toFixed(2)}`;
+                    select.appendChild(option);
+                }
+            });
+        }
+
+        // VENDAS
+        function adicionarVenda() {
+            const produtoId = parseInt(document.getElementById('vendaProduto').value);
+            const quantidade = parseInt(document.getElementById('vendaQuantidade').value);
+            const cliente = document.getElementById('vendaCliente').value;
+            const data = document.getElementById('vendaData').value;
+
+            if (!produtoId || !quantidade || !cliente || !data) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+
+            const produto = produtos.find(p => p.id === produtoId);
+            
+            if (!produto) {
+                alert('Produto não encontrado!');
+                return;
+            }
+
+            if (produto.quantidade < quantidade) {
+                alert(`Estoque insuficiente! Disponível: ${produto.quantidade}`);
+                return;
+            }
+
+            vendas.push({
+                id: Date.now(),
+                produtoId,
+                produtoNome: produto.nome,
+                quantidade,
+                precoUnitario: produto.venda,
+                custoUnitario: produto.custo,
+                total: produto.venda * quantidade,
+                cliente,
+                data
+            });
+
+            produto.quantidade -= quantidade;
+
+            salvarDados();
+            limparFormularioVenda();
+            atualizarTudo();
+            alert('Venda registrada com sucesso!');
+        }
+
+        function limparFormularioVenda() {
+            document.getElementById('vendaProduto').value = '';
+            document.getElementById('vendaQuantidade').value = '1';
+            document.getElementById('vendaCliente').value = '';
+        }
+
+        function removerVenda(id) {
+            if (confirm('Deseja realmente remover esta venda?')) {
+                const venda = vendas.find(v => v.id === id);
+                if (venda) {
+                    const produto = produtos.find(p => p.id === venda.produtoId);
+                    if (produto) {
+                        produto.quantidade += venda.quantidade;
+                    }
+                }
+                
+                vendas = vendas.filter(v => v.id !== id);
+                salvarDados();
+                atualizarTudo();
+            }
+        }
+
+        function renderizarVendas() {
+            const tbody = document.getElementById('vendasBody');
+            tbody.innerHTML = '';
+
+            if (vendas.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Nenhuma venda registrada</td></tr>';
+                return;
+            }
+
+            vendas.slice().reverse().forEach(venda => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${new Date(venda.data).toLocaleDateString('pt-BR')}</td>
+                    <td>${venda.produtoNome}</td>
+                    <td>${venda.quantidade}</td>
+                    <td>R$ ${venda.precoUnitario.toFixed(2)}</td>
+                    <td>R$ ${venda.total.toFixed(2)}</td>
+                    <td>${venda.cliente}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="removerVenda(${venda.id})">Remover</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // DESPESAS
+        function adicionarDespesa() {
+            const tipo = document.getElementById('despesaTipo').value;
+            const descricao = document.getElementById('despesaDescricao').value;
+            const valor = parseFloat(document.getElementById('despesaValor').value);
+            const data = document.getElementById('despesaData').value;
+
+            if (!tipo || !descricao || !valor || !data) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+
+            despesas.push({
+                id: Date.now(),
+                tipo,
+                descricao,
+                valor,
+                data
+            });
+
+            salvarDados();
+            limparFormularioDespesa();
+            atualizarTudo();
+            alert('Despesa registrada com sucesso!');
+        }
+
+        function limparFormularioDespesa() {
+            document.getElementById('despesaDescricao').value = '';
+            document.getElementById('despesaValor').value = '';
+        }
+
+        function removerDespesa(id) {
+            if (confirm('Deseja realmente remover esta despesa?')) {
+                despesas = despesas.filter(d => d.id !== id);
+                salvarDados();
+                atualizarTudo();
+            }
+        }
+
+        function renderizarDespesas() {
+            const tbody = document.getElementById('despesasBody');
+            tbody.innerHTML = '';
+
+            if (despesas.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Nenhuma despesa registrada</td></tr>';
+                return;
+            }
+
+            despesas.slice().reverse().forEach(despesa => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${new Date(despesa.data).toLocaleDateString('pt-BR')}</td>
+                    <td>${despesa.tipo}</td>
+                    <td>${despesa.descricao}</td>
+                    <td>R$ ${despesa.valor.toFixed(2)}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="removerDespesa(${despesa.id})">Remover</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            renderizarResumoDespesas();
+        }
+
+        function renderizarResumoDespesas() {
+            const tbody = document.getElementById('resumoBody');
+            tbody.innerHTML = '';
+
+            const resumo = { 'Salários': 0 };
+            let total = 0;
+
+            // Adicionar salários dos funcionários
+            funcionarios.forEach(func => {
+                resumo['Salários'] += func.salario;
+                total += func.salario;
+            });
+
+            // Adicionar outras despesas
+            despesas.forEach(despesa => {
+                if (!resumo[despesa.tipo]) {
+                    resumo[despesa.tipo] = 0;
+                }
+                resumo[despesa.tipo] += despesa.valor;
+                total += despesa.valor;
+            });
+
+            for (const [tipo, valor] of Object.entries(resumo)) {
+                if (valor > 0) {
+                    const percentual = total > 0 ? (valor / total * 100).toFixed(2) : 0;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${tipo}</td>
+                        <td>R$ ${valor.toFixed(2)}</td>
+                        <td>${percentual}%</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            }
+
+            if (total === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Nenhuma despesa registrada</td></tr>';
+            }
+        }
+
+        // CÁLCULOS E RELATÓRIOS
+        function calcularRelatorios() {
+            const receitaBruta = vendas.reduce((acc, v) => acc + v.total, 0);
+            const cpv = vendas.reduce((acc, v) => acc + (v.custoUnitario * v.quantidade), 0);
+            const lucroBruto = receitaBruta - cpv;
+            const despesasTotais = despesas.reduce((acc, d) => acc + d.valor, 0);
+            const folhaPagamento = funcionarios.reduce((acc, f) => acc + f.salario, 0);
+            const lair = lucroBruto - despesasTotais - folhaPagamento;
+
+            // Cálculo de impostos baseado no regime com valores pré-estabelecidos
+            const regime = document.getElementById('regimeTributario').value;
+            let impostos = 0;
+            let infoRegime = '';
+
+            if (regime === 'simples') {
+                // Simples Nacional - Anexo I (Comércio) - Alíquotas fixas por faixa
+                if (receitaBruta <= 180000) {
+                    impostos = receitaBruta * 0.04; // 4%
+                    infoRegime = '<strong>Simples Nacional - Comércio:</strong> Faixa 1 - Alíquota de 4% (até R$ 180 mil/ano)';
+                } else if (receitaBruta <= 360000) {
+                    impostos = (receitaBruta * 0.073) - 5940;
+                    infoRegime = '<strong>Simples Nacional - Comércio:</strong> Faixa 2 - Alíquota de 7,3% (de R$ 180 mil a R$ 360 mil/ano)';
+                } else if (receitaBruta <= 720000) {
+                    impostos = (receitaBruta * 0.095) - 13860;
+                    infoRegime = '<strong>Simples Nacional - Comércio:</strong> Faixa 3 - Alíquota de 9,5% (de R$ 360 mil a R$ 720 mil/ano)';
+                } else if (receitaBruta <= 1800000) {
+                    impostos = (receitaBruta * 0.107) - 22500;
+                    infoRegime = '<strong>Simples Nacional - Comércio:</strong> Faixa 4 - Alíquota de 10,7% (de R$ 720 mil a R$ 1,8 milhão/ano)';
+                } else if (receitaBruta <= 3600000) {
+                    impostos = (receitaBruta * 0.143) - 87300;
+                    infoRegime = '<strong>Simples Nacional - Comércio:</strong> Faixa 5 - Alíquota de 14,3% (de R$ 1,8 milhão a R$ 3,6 milhões/ano)';
+                } else if (receitaBruta <= 4800000) {
+                    impostos = (receitaBruta * 0.19) - 378000;
+                    infoRegime = '<strong>Simples Nacional - Comércio:</strong> Faixa 6 - Alíquota de 19% (de R$ 3,6 milhões a R$ 4,8 milhões/ano)';
+                } else {
+                    impostos = receitaBruta * 0.19; // Acima do limite
+                    infoRegime = '<strong>Simples Nacional:</strong> Receita acima de R$ 4,8 milhões. Considere outro regime tributário.';
+                }
+            } else if (regime === 'presumido') {
+                // Lucro Presumido - Presunção de 8% para comércio
+                const baseCalculo = receitaBruta * 0.08;
+                const irpj = baseCalculo * 0.15;
+                const adicional = baseCalculo > 20000 ? (baseCalculo - 20000) * 0.10 : 0;
+                const csll = baseCalculo * 0.09;
+                impostos = irpj + adicional + csll;
+                infoRegime = '<strong>Lucro Presumido:</strong> Presunção de 8% da receita bruta. IRPJ 15% + 10% adicional (acima de R$ 20 mil/mês) + CSLL 9%. Total: aproximadamente 11,33% da receita bruta.';
+            } else if (regime === 'real') {
+                // Lucro Real - Tributação sobre lucro efetivo
+                if (lair > 0) {
+                    const irpj = lair * 0.15;
+                    const adicional = lair > 20000 ? (lair - 20000) * 0.10 : 0;
+                    const csll = lair * 0.09;
+                    impostos = irpj + adicional + csll;
+                    infoRegime = '<strong>Lucro Real:</strong> IRPJ 15% sobre lucro + 10% adicional (acima de R$ 20 mil/mês) + CSLL 9%. Tributação sobre o lucro efetivo apurado.';
+                } else {
+                    impostos = 0;
+                    infoRegime = '<strong>Lucro Real:</strong> Sem impostos pois não houve lucro antes dos impostos (LAIR negativo ou zero).';
+                }
+            }
+
+            // Garantir que impostos não sejam negativos
+            impostos = Math.max(0, impostos);
+
+            const lucroLiquido = lair - impostos;
+
+            // Atualizar informação do regime
+            document.getElementById('infoRegime').innerHTML = infoRegime;
+
+            // Atualizar DRE
+            document.getElementById('relReceitaBruta').textContent = formatarMoeda(receitaBruta);
+            document.getElementById('relCPV').textContent = formatarMoeda(cpv);
+            document.getElementById('relLucroBruto').textContent = formatarMoeda(lucroBruto);
+            document.getElementById('relDespesasOp').textContent = formatarMoeda(despesasTotais);
+            document.getElementById('relFolha').textContent = formatarMoeda(folhaPagamento);
+            document.getElementById('relLAIR').textContent = formatarMoeda(lair);
+            document.getElementById('relImpostos').textContent = formatarMoeda(impostos);
+            document.getElementById('relLucroLiquido').textContent = formatarMoeda(lucroLiquido);
+
+            // Indicadores - Cálculo corrigido das margens
+            const margemBruta = receitaBruta > 0 ? ((lucroBruto / receitaBruta) * 100).toFixed(2) : 0;
+            const margemLiquida = receitaBruta > 0 ? ((lucroLiquido / receitaBruta) * 100).toFixed(2) : 0;
+            const ticketMedio = vendas.length > 0 ? (receitaBruta / vendas.length) : 0;
+            const custoTotal = cpv + despesasTotais + folhaPagamento;
+            const roi = custoTotal > 0 ? ((lucroLiquido / custoTotal) * 100).toFixed(2) : 0;
+            const custoPessoalPerc = receitaBruta > 0 ? ((folhaPagamento / receitaBruta) * 100).toFixed(2) : 0;
+
+            document.getElementById('margemBruta').textContent = margemBruta + '%';
+            document.getElementById('margemLiquida').textContent = margemLiquida + '%';
+            document.getElementById('ticketMedio').textContent = formatarMoeda(ticketMedio);
+            document.getElementById('roi').textContent = roi + '%';
+            document.getElementById('custoPessoal').textContent = custoPessoalPerc + '%';
+
+            // Dashboard
+            document.getElementById('dashReceitaBruta').textContent = formatarMoeda(receitaBruta);
+            document.getElementById('dashReceitaLiquida').textContent = formatarMoeda(receitaBruta - impostos);
+            document.getElementById('dashDespesas').textContent = formatarMoeda(despesasTotais + folhaPagamento);
+            document.getElementById('dashImpostos').textContent = formatarMoeda(impostos);
+            document.getElementById('dashTotalVendas').textContent = vendas.length;
+            document.getElementById('dashTotalProdutos').textContent = produtos.length;
+            document.getElementById('dashLucroBruto').textContent = formatarMoeda(lucroBruto);
+            document.getElementById('dashLucroLiquido').textContent = formatarMoeda(lucroLiquido);
+            document.getElementById('dashTotalFuncionarios').textContent = funcionarios.length;
+            document.getElementById('dashFolhaPagamento').textContent = formatarMoeda(folhaPagamento);
+        }
+
+        // UTILITÁRIOS
+        function formatarMoeda(valor) {
+            return 'R$ ' + valor.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        function salvarDados() {
+            localStorage.setItem('produtos', JSON.stringify(produtos));
+            localStorage.setItem('vendas', JSON.stringify(vendas));
+            localStorage.setItem('despesas', JSON.stringify(despesas));
+            localStorage.setItem('funcionarios', JSON.stringify(funcionarios));
+        }
+
+        function carregarDados() {
+            const produtosStorage = localStorage.getItem('produtos');
+            const vendasStorage = localStorage.getItem('vendas');
+            const despesasStorage = localStorage.getItem('despesas');
+            const funcionariosStorage = localStorage.getItem('funcionarios');
+
+            if (produtosStorage) produtos = JSON.parse(produtosStorage);
+            if (vendasStorage) vendas = JSON.parse(vendasStorage);
+            if (despesasStorage) despesas = JSON.parse(despesasStorage);
+            if (funcionariosStorage) funcionarios = JSON.parse(funcionariosStorage);
+        }
+
+        function atualizarTudo() {
+            renderizarEstoque();
+            renderizarVendas();
+            renderizarDespesas();
+            renderizarFuncionarios();
+            calcularRelatorios();
+        }
+    </script>
+</body>
+</html>
