@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de CPF para Testes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .alert {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            color: #856404;
+        }
+
+        .alert strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .options {
+            margin-bottom: 30px;
+        }
+
+        .option-group {
+            margin-bottom: 20px;
+        }
+
+        .option-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .radio-group input[type="radio"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .quantity-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .quantity-input input {
+            width: 100px;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .quantity-input input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-bottom: 15px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .result-container {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .result-container.active {
+            display: block;
+        }
+
+        .result-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            margin-bottom: 15px;
+        }
+
+        .cpf-item {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .cpf-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .cpf-list .cpf-item {
+            font-size: 18px;
+            padding: 10px;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #5568d3;
+        }
+
+        .copy-btn.copied {
+            background: #28a745;
+        }
+
+        .info {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .info h3 {
+            color: #1565c0;
+            margin-bottom: 10px;
+        }
+
+        .info p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .cpf-item {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔢 Gerador de CPF</h1>
+        <p class="subtitle">Gere CPFs válidos para testes de desenvolvimento</p>
+
+        <div class="alert">
+            <strong>⚠️ Aviso Importante</strong>
+            Esta ferramenta gera CPFs FICTÍCIOS apenas para testes de software. Nunca use estes números para cadastros reais ou propósitos oficiais!
+        </div>
+
+        <div class="options">
+            <div class="option-group">
+                <label>Formato:</label>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="formato" value="formatado" checked>
+                        Com formatação (000.000.000-00)
+                    </label>
+                    <label>
+                        <input type="radio" name="formato" value="simples">
+                        Apenas números (00000000000)
+                    </label>
+                </div>
+            </div>
+
+            <div class="option-group">
+                <label>Quantidade:</label>
+                <div class="quantity-input">
+                    <input type="number" id="quantidade" min="1" max="100" value="1">
+                    <span>CPF(s)</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn" onclick="gerarCPFs()">🎲 Gerar CPF(s)</button>
+
+        <div class="result-container" id="resultContainer">
+            <div class="result-box">
+                <div id="cpfResults"></div>
+            </div>
+            <button class="btn btn-secondary" onclick="copiarTodos()">📋 Copiar Todos</button>
+        </div>
+
+        <div class="info">
+            <h3>ℹ️ Sobre esta ferramenta</h3>
+            <p><strong>Para que serve?</strong> Esta ferramenta gera números de CPF válidos seguindo o algoritmo oficial da Receita Federal, mas são completamente fictícios e servem apenas para testes de desenvolvimento de software.</p>
+            <p><strong>Como funciona?</strong> O gerador cria os 9 primeiros dígitos aleatoriamente e calcula os 2 dígitos verificadores seguindo a mesma fórmula usada pela Receita Federal.</p>
+            <p><strong>É seguro usar?</strong> Sim, para testes! Mas NUNCA use estes CPFs em situações reais, pois isso pode configurar uso indevido de documentos.</p>
+            <p><strong>Ideal para:</strong> Testes de formulários, validação de sistemas, preenchimento de bases de dados de desenvolvimento, demonstrações de software.</p>
+        </div>
+    </div>
+
+    <script>
+        // Função para gerar um CPF válido aleatório
+        function gerarCPF() {
+            // Gera os 9 primeiros dígitos aleatoriamente
+            let cpf = [];
+            for (let i = 0; i < 9; i++) {
+                cpf.push(Math.floor(Math.random() * 10));
+            }
+
+            // Calcula o primeiro dígito verificador
+            let soma = 0;
+            for (let i = 0; i < 9; i++) {
+                soma += cpf[i] * (10 - i);
+            }
+            let resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) resto = 0;
+            cpf.push(resto);
+
+            // Calcula o segundo dígito verificador
+            soma = 0;
+            for (let i = 0; i < 10; i++) {
+                soma += cpf[i] * (11 - i);
+            }
+            resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) resto = 0;
+            cpf.push(resto);
+
+            return cpf.join('');
+        }
+
+        // Função para formatar o CPF
+        function formatarCPF(cpf) {
+            return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        }
+
+        // Função para gerar múltiplos CPFs
+        function gerarCPFs() {
+            const quantidade = parseInt(document.getElementById('quantidade').value);
+            const formato = document.querySelector('input[name="formato"]:checked').value;
+            const resultContainer = document.getElementById('resultContainer');
+            const cpfResults = document.getElementById('cpfResults');
+
+            if (quantidade < 1 || quantidade > 100) {
+                alert('Por favor, escolha uma quantidade entre 1 e 100.');
+                return;
+            }
+
+            cpfResults.innerHTML = '';
+
+            if (quantidade === 1) {
+                // Gera apenas um CPF (destaque maior)
+                const cpf = gerarCPF();
+                const cpfFormatado = formato === 'formatado' ? formatarCPF(cpf) : cpf;
+                
+                cpfResults.innerHTML = `
+                    <div class="cpf-item">
+                        <span id="cpfUnico">${cpfFormatado}</span>
+                    </div>
+                `;
+            } else {
+                // Gera múltiplos CPFs em lista
+                cpfResults.innerHTML = '<div class="cpf-list"></div>';
+                const lista = cpfResults.querySelector('.cpf-list');
+
+                for (let i = 0; i < quantidade; i++) {
+                    const cpf = gerarCPF();
+                    const cpfFormatado = formato === 'formatado' ? formatarCPF(cpf) : cpf;
+                    
+                    const item = document.createElement('div');
+                    item.className = 'cpf-item';
+                    item.innerHTML = `
+                        <span>${cpfFormatado}</span>
+                        <button class="copy-btn" onclick="copiarIndividual(this, '${cpfFormatado}')">Copiar</button>
+                    `;
+                    lista.appendChild(item);
+                }
+            }
+
+            resultContainer.classList.add('active');
+        }
+
+        // Função para copiar um CPF individual
+        function copiarIndividual(btn, cpf) {
+            navigator.clipboard.writeText(cpf).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copiado!';
+                btn.classList.add('copied');
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                alert('Erro ao copiar: ' + err);
+            });
+        }
+
+        // Função para copiar todos os CPFs
+        function copiarTodos() {
+            const cpfItems = document.querySelectorAll('.cpf-item span');
+            let texto = '';
+            
+            cpfItems.forEach(item => {
+                texto += item.textContent.trim() + '\n';
+            });
+
+            navigator.clipboard.writeText(texto).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Todos Copiados!';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            }).catch(err => {
+                alert('Erro ao copiar: ' + err);
+            });
+        }
+
+        // Gera um CPF automaticamente ao carregar a página
+        window.onload = function() {
+            gerarCPFs();
+        };
+    </script>
+</body>
+</html>
